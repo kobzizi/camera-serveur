@@ -9,26 +9,14 @@ app = Flask(__name__)
 latest_frame = None
 lock = Lock()
 
-# Page web
 HTML = """
 <!DOCTYPE html>
 <html>
 <head>
     <title>Flux Caméra</title>
     <style>
-        body { 
-            background: black; 
-            color: white; 
-            text-align: center; 
-            font-family: Arial, sans-serif; 
-            margin: 0;
-            padding: 20px;
-        }
-        img { 
-            width: 100%; 
-            max-width: 900px; 
-            border: 2px solid #333;
-        }
+        body { background: black; color: white; text-align: center; font-family: Arial; margin: 0; padding: 20px; }
+        img { width: 100%; max-width: 900px; border: 2px solid #333; }
         h1 { margin-bottom: 10px; }
     </style>
 </head>
@@ -43,7 +31,6 @@ HTML = """
 def index():
     return render_template_string(HTML)
 
-# Route qui reçoit les images du client
 @app.route('/stream', methods=['POST'])
 def receive_stream():
     global latest_frame
@@ -58,7 +45,6 @@ def receive_stream():
         pass
     return "OK", 200
 
-# Génère le flux vidéo
 def gen_frames():
     global latest_frame
     while True:
@@ -66,9 +52,8 @@ def gen_frames():
             if latest_frame is not None:
                 frame_to_send = latest_frame.copy()
             else:
-                # Image noire en attendant le flux
                 frame_to_send = np.zeros((480, 640, 3), dtype=np.uint8)
-        
+       
         ret, buffer = cv2.imencode('.jpg', frame_to_send)
         if ret:
             yield (b'--frame\r\n'
