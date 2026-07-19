@@ -1,1 +1,1 @@
-web: gunicorn --workers 1 --threads 2 server:app
+web: python server.py
